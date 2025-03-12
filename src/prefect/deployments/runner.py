@@ -376,7 +376,7 @@ class RunnerDeployment(BaseModel):
         deployment_id: UUID,
         client: PrefectClient,
         version_info: Optional[dict[str, Any]] = None,
-        make_current_version: bool = True,
+        branch_version: bool = True,
     ):
         parameter_openapi_schema = self._parameter_openapi_schema.model_dump(
             exclude_unset=True
@@ -394,7 +394,7 @@ class RunnerDeployment(BaseModel):
                 pull_steps = [pull_steps]
             update_payload["pull_steps"] = pull_steps
 
-        if make_current_version:
+        if branch_version:
             update_payload["version_info"] = version_info
 
         await client.update_deployment(
@@ -405,7 +405,7 @@ class RunnerDeployment(BaseModel):
             ),
         )
 
-        if not make_current_version:
+        if not branch_version:
             # TODO: call client.create_deployment_version(deployment_id, version_info)
             pass
 
@@ -449,7 +449,7 @@ class RunnerDeployment(BaseModel):
         work_pool_name: Optional[str] = None,
         image: Optional[str] = None,
         version_info: Optional[dict[str, Any]] = None,
-        make_current_version: bool = True,
+        branch_version: bool = False,
     ) -> UUID:
         """
         Registers this deployment with the API and returns the deployment's ID.
@@ -461,8 +461,8 @@ class RunnerDeployment(BaseModel):
                 use for this deployment. Only used when the deployment is
                 deployed to a work pool.
             version_info: Version information for the deployment.
-            make_current_version: Whether or not to set the supplied version
-                as the current version for the deployment.
+            branch_version: Whether or not to set the supplied version
+                as a branch of the deployment.
         Returns:
             The ID of the created deployment.
         """
@@ -478,7 +478,7 @@ class RunnerDeployment(BaseModel):
                 if work_pool_name:
                     self.work_pool_name = work_pool_name
                 return await self._update(
-                    deployment.id, client, version_info, make_current_version
+                    deployment.id, client, version_info, branch_version
                 )
 
     async def _create_slas(self, deployment_id: UUID, client: PrefectClient):
