@@ -268,7 +268,7 @@ async def deploy(
     version: str = typer.Option(
         None, "--version", help="A version to give the deployment."
     ),
-    version_info: dict[str, str] = typer.Option(
+    version_info: str = typer.Option(
         None,
         "--version-info",
         help="Version information for the deployment, minimally including"
@@ -799,9 +799,14 @@ async def _run_single_deploy(
             "enforce_parameter_schema"
         )
 
+    version_info = options.get("version_info")
+
+    if version_info:
+        version_info = json.loads(version_info)
+
     apply_coro = deployment.apply(
         version_info=options.get("version_info"),
-        barnch_version=options.get("branch_version", True),
+        branch_version=options.get("branch_version", True),
     )
     if TYPE_CHECKING:
         assert inspect.isawaitable(apply_coro)
