@@ -805,7 +805,7 @@ async def _run_single_deploy(
         version_info = json.loads(version_info)
 
     apply_coro = deployment.apply(
-        version_info=options.get("version_info"),
+        version_info=version_info,
         branch_version=options.get("branch_version", True),
     )
     if TYPE_CHECKING:
