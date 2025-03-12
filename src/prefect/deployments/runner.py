@@ -407,7 +407,6 @@ class RunnerDeployment(BaseModel):
 
         if not make_current_version:
             # TODO: call client.create_deployment_version(deployment_id, version_info)
-            # TODO: call client.set_deployment_version(deployment_id, version_id)
             pass
 
         await self._create_triggers(deployment_id, client)
