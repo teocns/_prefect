@@ -268,6 +268,18 @@ async def deploy(
     version: str = typer.Option(
         None, "--version", help="A version to give the deployment."
     ),
+    version_info: dict[str, Any] = typer.Option(
+        None,
+        "--version-info",
+        help="Version information for the deployment, minimally including"
+        " 'type', 'branch', 'version', and 'url'.",
+    ),
+    make_current_version: bool = typer.Option(
+        True,
+        "--make-current-version",
+        help="Set the supplied version as the current version for the deployment. "
+        "For new deployments, the supplied version will always be the current version.",
+    ),
     tags: List[str] = typer.Option(
         None,
         "-t",
@@ -396,12 +408,6 @@ async def deploy(
         "--sla",
         help="Experimental: One or more SLA configurations for the deployment. May be"
         " removed or modified at any time. Currently only supported on Prefect Cloud.",
-    ),
-    version_info: dict[str, Any] = typer.Option(
-        None,
-        "--version-info",
-        help="Version information for the deployment, minimally including"
-        " 'type', 'branch', 'version', and 'url'.",
     ),
 ):
     """
@@ -793,7 +799,10 @@ async def _run_single_deploy(
             "enforce_parameter_schema"
         )
 
-    apply_coro = deployment.apply(version_info=options.get("version_info"))
+    apply_coro = deployment.apply(
+        version_info=options.get("version_info"),
+        make_current_version=options.get("make_current_version", True),
+    )
     if TYPE_CHECKING:
         assert inspect.isawaitable(apply_coro)
 

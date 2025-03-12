@@ -252,12 +252,12 @@ class DeploymentCreate(ActionBaseModel):
     description: Optional[str] = Field(default=None)
     path: Optional[str] = Field(default=None)
     version: Optional[str] = Field(default=None)
+    version_info: Optional[dict[str, Any]] = Field(default=None)
     entrypoint: Optional[str] = Field(default=None)
     job_variables: dict[str, Any] = Field(
         default_factory=dict,
         description="Overrides to apply to flow run infrastructure at runtime.",
     )
-    version_info: Optional[dict[str, Any]] = Field(default=None)
 
     def check_valid_configuration(self, base_job_template: dict[str, Any]) -> None:
         """Check that the combination of base_job_template defaults
@@ -288,6 +288,7 @@ class DeploymentUpdate(ActionBaseModel):
         return remove_old_deployment_fields(values)
 
     version: Optional[str] = Field(default=None)
+    version_info: Optional[dict[str, Any]] = Field(default=None)
     description: Optional[str] = Field(default=None)
     parameters: Optional[dict[str, Any]] = Field(
         default=None,
