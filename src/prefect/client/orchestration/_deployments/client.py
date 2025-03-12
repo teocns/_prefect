@@ -1039,7 +1039,7 @@ class DeploymentAsyncClient(BaseAsyncClient):
     async def create_deployment_version(
         self,
         deployment_id: "UUID",
-        version_info: dict[str, Any],
+        version_info: dict[str, str],
     ):
         body = version_info
         response = await self.request(

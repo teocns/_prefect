@@ -268,7 +268,7 @@ async def deploy(
     version: str = typer.Option(
         None, "--version", help="A version to give the deployment."
     ),
-    version_info: dict[str, Any] = typer.Option(
+    version_info: dict[str, str] = typer.Option(
         None,
         "--version-info",
         help="Version information for the deployment, minimally including"
