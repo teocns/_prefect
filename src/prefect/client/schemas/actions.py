@@ -257,6 +257,7 @@ class DeploymentCreate(ActionBaseModel):
         default_factory=dict,
         description="Overrides to apply to flow run infrastructure at runtime.",
     )
+    version_info: Optional[dict[str, Any]] = Field(default=None)
 
     def check_valid_configuration(self, base_job_template: dict[str, Any]) -> None:
         """Check that the combination of base_job_template defaults

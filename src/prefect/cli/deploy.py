@@ -397,6 +397,12 @@ async def deploy(
         help="Experimental: One or more SLA configurations for the deployment. May be"
         " removed or modified at any time. Currently only supported on Prefect Cloud.",
     ),
+    version_info: dict[str, Any] = typer.Option(
+        None,
+        "--version-info",
+        help="Version information for the deployment, minimally including"
+        " 'type', 'branch', 'version', and 'url'.",
+    ),
 ):
     """
     Create a deployment to deploy a flow from this project.
@@ -453,6 +459,7 @@ async def deploy(
         "param": param,
         "params": params,
         "sla": sla,
+        "version_info": version_info,
     }
 
     try:
@@ -786,7 +793,7 @@ async def _run_single_deploy(
             "enforce_parameter_schema"
         )
 
-    apply_coro = deployment.apply()
+    apply_coro = deployment.apply(version_info=options.get("version_info"))
     if TYPE_CHECKING:
         assert inspect.isawaitable(apply_coro)
 

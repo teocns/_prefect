@@ -610,6 +610,7 @@ class DeploymentAsyncClient(BaseAsyncClient):
         pull_steps: list[dict[str, Any]] | None = None,
         enforce_parameter_schema: bool | None = None,
         job_variables: dict[str, Any] | None = None,
+        version_info: dict[str, Any] | None = None,
     ) -> "UUID":
         """
         Create a deployment.
@@ -660,6 +661,7 @@ class DeploymentAsyncClient(BaseAsyncClient):
             concurrency_options=concurrency_options,
             pull_steps=pull_steps,
             enforce_parameter_schema=enforce_parameter_schema,
+            version_info=version_info,
         )
 
         if work_pool_name is not None:

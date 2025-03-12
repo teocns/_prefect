@@ -281,7 +281,10 @@ class RunnerDeployment(BaseModel):
         return reconcile_schedules_runner(values)
 
     async def _create(
-        self, work_pool_name: Optional[str] = None, image: Optional[str] = None
+        self,
+        work_pool_name: Optional[str] = None,
+        image: Optional[str] = None,
+        version_info: Optional[dict[str, Any]] = None,
     ) -> UUID:
         work_pool_name = work_pool_name or self.work_pool_name
 
@@ -327,6 +330,7 @@ class RunnerDeployment(BaseModel):
                     exclude_unset=True
                 ),
                 enforce_parameter_schema=self.enforce_parameter_schema,
+                version_info=version_info,
             )
 
             if work_pool_name:
@@ -342,6 +346,9 @@ class RunnerDeployment(BaseModel):
                         create_payload["pull_steps"] = [pull_steps]
                 else:
                     create_payload["pull_steps"] = []
+
+            if version_info:
+                create_payload["version_info"] = version_info
 
             try:
                 deployment_id = await client.create_deployment(**create_payload)
@@ -428,7 +435,10 @@ class RunnerDeployment(BaseModel):
 
     @sync_compatible
     async def apply(
-        self, work_pool_name: Optional[str] = None, image: Optional[str] = None
+        self,
+        work_pool_name: Optional[str] = None,
+        image: Optional[str] = None,
+        version_info: Optional[dict[str, Any]] = None,
     ) -> UUID:
         """
         Registers this deployment with the API and returns the deployment's ID.
@@ -448,13 +458,13 @@ class RunnerDeployment(BaseModel):
             try:
                 deployment = await client.read_deployment_by_name(self.full_name)
             except ObjectNotFound:
-                return await self._create(work_pool_name, image)
+                deployment = await self._create(work_pool_name, image, version_info)
             else:
                 if image:
                     self.job_variables["image"] = image
                 if work_pool_name:
                     self.work_pool_name = work_pool_name
-                return await self._update(deployment.id, client)
+                return await self._update(deployment.id, client, version_info)
 
     async def _create_slas(self, deployment_id: UUID, client: PrefectClient):
         if not isinstance(self._sla, list):
