@@ -451,6 +451,8 @@ async def deploy(
         "entrypoint": entrypoint,
         "description": description,
         "version": version,
+        "version_info": version_info,
+        "make_current_version": make_current_version,
         "tags": tags,
         "concurrency_limit": concurrency_limit_config,
         "work_pool_name": work_pool_name,
@@ -465,7 +467,6 @@ async def deploy(
         "param": param,
         "params": params,
         "sla": sla,
-        "version_info": version_info,
     }
 
     try:
