@@ -1036,6 +1036,21 @@ class DeploymentAsyncClient(BaseAsyncClient):
             else:
                 raise
 
+    async def create_deployment_version(
+        self,
+        deployment_id: "UUID",
+        version_info: dict[str, Any],
+    ):
+        body = version_info
+        response = await self.request(
+            "POST",
+            "/deployments/{id}/versions",
+            path_params={"id": deployment_id},
+            json=body,
+        )
+
+        return DeploymentResponse.model_validate(response.json())
+
     async def get_scheduled_flow_runs_for_deployments(
         self,
         deployment_ids: list["UUID"],

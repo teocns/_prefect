@@ -405,9 +405,8 @@ class RunnerDeployment(BaseModel):
             ),
         )
 
-        if not branch_version:
-            # TODO: call client.create_deployment_version(deployment_id, version_info)
-            pass
+        if not branch_version and version_info:
+            await client.create_deployment_version(deployment_id, version_info)
 
         await self._create_triggers(deployment_id, client)
 
