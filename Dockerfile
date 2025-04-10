@@ -1,5 +1,5 @@
 # The version of Python in the final image
-ARG PYTHON_VERSION=3.9
+ARG PYTHON_VERSION=3.12
 # The base image to use for the final image; Prefect and its Python requirements will
 # be installed in this image. The default is the official Python slim image.
 # The following images are also available in this file:
@@ -7,7 +7,7 @@ ARG PYTHON_VERSION=3.9
 # Any image tag can be used, but it must have apt and pip.
 ARG BASE_IMAGE=python:${PYTHON_VERSION}-slim
 # The version used to build the Python distributable.
-ARG BUILD_PYTHON_VERSION=3.9
+ARG BUILD_PYTHON_VERSION=3.12
 # THe version used to build the UI distributable.
 ARG NODE_VERSION=18.18.0
 # Any extra Python requirements to install
@@ -108,7 +108,7 @@ COPY --from=python-builder /opt/prefect/dist ./dist
 
 # Extras to include during installation
 ARG PREFECT_EXTRAS=[redis,client,otel]
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=s/2a7b73bf-21d7-493b-8f97-0ed72eadfb25-/root/cache/uv,target=/root/.cache/uv \
     uv pip install "./dist/prefect.tar.gz${PREFECT_EXTRAS:-""}" && \
     rm -rf dist/
 
@@ -117,7 +117,7 @@ RUN uv pip uninstall setuptools
 
 # Install any extra packages
 ARG EXTRA_PIP_PACKAGES
-RUN --mount=type=cache,target=/root/.cache/uv \
+RUN --mount=type=cache,id=s/2a7b73bf-21d7-493b-8f97-0ed72eadfb25-/root/cache/uv,target=/root/.cache/uv \
     [ -z "${EXTRA_PIP_PACKAGES:-""}" ] || uv pip install "${EXTRA_PIP_PACKAGES}"
 
 # Smoke test
